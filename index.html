@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSA Problem Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        body {
+            background-color: #121212;
+            color: #f5f5f5;
+            font-family: 'Poppins', sans-serif;
+            padding: 20px;
+        }
+        .title, .subtitle {
+            color: #f5f5f5;
+            font-family: 'Poppins', sans-serif;
+        }
+        .dsa-section {
+            margin-bottom: 30px;
+            border-radius: 12px;
+            padding: 20px;
+            background-color: #1e1e1e;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        .section-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 15px;
+        }
+        .section-emoji {
+            font-size: 2.2rem;
+            margin-right: 15px;
+        }
+        .problem-row {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+        }
+        .problem-row:hover {
+            background-color: #252525;
+        }
+        .checkbox-custom {
+            margin-right: 12px;
+            cursor: pointer;
+            font-size: 1.6rem;
+        }
+        .problem-info {
+            display: flex;
+            flex-wrap: wrap;
+            flex-grow: 1;
+            align-items: center;
+        }
+        .problem-number {
+            width: 30px;
+            margin-right: 10px;
+            font-weight: 600;
+        }
+        .problem-name {
+            flex-grow: 1;
+            margin-right: 10px;
+            min-width: 200px;
+        }
+        .problem-link {
+            color: #4da6ff;
+            margin-right: 15px;
+            text-decoration: none;
+        }
+        .problem-link:hover {
+            text-decoration: underline;
+        }
+        .difficulty {
+            border-radius: 6px;
+            padding: 4px 10px;
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
+        .easy {
+            background-color: #2e7d32;
+        }
+        .medium {
+            background-color: #ff8f00;
+        }
+        .hard {
+            background-color: #c62828;
+        }
+        .solution-link {
+            color: #4caf50;
+            margin-right: 15px;
+        }
+        .companies {
+            color: #bb86fc;
+            font-size: 0.9rem;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        .progress-container {
+            margin: 25px 0;
+            padding: 20px;
+            background-color: #1e1e1e;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        .filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .filter-button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        .filter-button:hover, .filter-button.active {
+            background-color: #bb86fc;
+        }
+        .emoji-done {
+            color: #4caf50;
+        }
+        .emoji-pending {
+            color: #bbbbbb;
+        }
+        /* Responsive adjustments */
+        @media screen and (max-width: 768px) {
+            .problem-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .problem-name {
+                margin-bottom: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title is-2">📝 DSA Problem Tracker </h1>
+            <div class="action-buttons">
+                <button id="save-progress" class="button is-primary">💾 Save Progress</button>
+                <button id="reset-progress" class="button is-danger">🔄 Reset Progress</button>
+            </div>
+        </div>
+        <div class="progress-container">
+            <h3 class="subtitle is-5">📊 Your Progress</h3>
+            <progress id="total-progress" class="progress is-primary" value="0" max="100"></progress>
+            <p id="progress-text">0 of 100 problems solved (0%)</p>
+        </div>
+        <div class="filter-container">
+            <button class="filter-button active" data-filter="all">🌐 All</button>
+            <button class="filter-button" data-filter="solved">✅ Solved</button>
+            <button class="filter-button" data-filter="unsolved">⏳ Unsolved</button>
+            <button class="filter-button" data-filter="easy">🟢 Easy</button>
+            <button class="filter-button" data-filter="medium">🟠 Medium</button>
+            <button class="filter-button" data-filter="hard">🔴 Hard</button>
+        </div>
+        <!-- Arrays & Strings Section -->
+        <div class="dsa-section" id="arrays-strings">
+            <div class="section-title">
+                <span class="section-emoji">🚃</span>
+                <h2 class="title is-4">Arrays & Strings</h2>
+            </div>
+            <div class="problems-container">
+                <<div class="problem-row" data-difficulty="easy">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">1.</span>
+                        <span class="problem-name">Majority Element</span>
+                        <span class="difficulty easy">🟢 Easy</span>
+                        <span class="companies">💼 Amazon Google</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="easy">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">2.</span>
+                        <span class="problem-name">Repeat & Missing Number</span>
+                        <span class="difficulty easy">🟢 Easy</span>
+                        <span class="companies">💼 Amazon</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="easy">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">3.</span>
+                        <span class="problem-name">Merge 2 Sorted Array Without Extra Space</span>
+                        <span class="difficulty easy">🟢 Easy</span>
+                        <span class="companies">💼 Amdocs Brocade Goldman Sachs Juniper Network</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="easy">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">4.</span>
+                        <span class="problem-name">Single Number</span>
+                        <span class="difficulty easy">🟢 Easy</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="easy">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">5.</span>
+                        <span class="problem-name">Stock Buy & Sell</span>
+                        <span class="difficulty easy">🟢 Easy</span>
+                        <span class="companies">💼 Amazon DEShaw Directi Flipkart Goldman Sachs</span>
+                    </div>
+                </div>
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">6.</span>
+                        <span class="problem-name">Kadane's Algorithm</span>
+                        <span class="difficulty medium">🟡 Medium</span>
+                        <span class="companies">💼 Microsoft Facebook</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">7.</span>
+                        <span class="problem-name">Pow X^n</span>
+                        <span class="difficulty medium">🟡 Medium</span>
+                    </div>
+                </div>
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">8.</span>
+                        <span class="problem-name">Container with Most Water</span>
+                        <span class="difficulty medium">🟡 Medium</span>
+                        <span class="companies">💼 Flipkart Dunzo</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">9.</span>
+                        <span class="problem-name">Sort Array of 0s, 1s & 2s</span>
+                        <span class="difficulty medium">🟡 Medium</span>
+                        <span class="companies">💼 Microsoft Amazon MakeMyTrip</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">10.</span>
+                        <span class="problem-name">Three Sum</span>
+                        <span class="difficulty medium">🟡 Medium</span>
+                        <span class="companies">💼 Adobe Amazon Microsoft Morgan Stanley Samsung</span>
+                    </div>
+                </div>
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">11.</span>
+                        <span class="problem-name">Four Sum</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">12.</span>
+                        <span class="problem-name">Search a 2D Matrix</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">13.</span>
+                        <span class="problem-name">Next Permutation</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                        <span class="companies">💼 Adobe GoldmanSachs Uber</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">14.</span>
+                        <span class="problem-name">Merge Overlapping Intervals</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                        <span class="companies">💼 Google</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">15.</span>
+                        <span class="problem-name">Longest Substring Without Repeating</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                        <span class="companies">💼 MorganStanley Amazon</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">16.</span>
+                        <span class="problem-name">Set Matrix Zeroes</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                        <span class="companies">💼 Microsoft Amazon</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">17.</span>
+                        <span class="problem-name">Word Search</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                        <span class="companies">💼 Ola GoldmanSachs Google</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">18.</span>
+                        <span class="problem-name">Product of Array Except Itself</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                        <span class="companies">💼 Amazon DEShaw Intuit MorganStanley Flipkart</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">19.</span>
+                        <span class="problem-name">Subarray Sum Equals K</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">20.</span>
+                        <span class="problem-name">Find Duplicate</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                        <span class="companies">💼 Amazon D-EShaw Flipkart Paytm Qualcomm Zoho</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium-hard">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">21.</span>
+                        <span class="problem-name">Count Inversions</span>
+                        <span class="difficulty medium-hard">🟠🔴 Medium / Hard</span>
+                        <span class="companies">💼 Adobe Amazon BankBazaar Flipkart Microsoft Myntra</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="hard">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">22.</span>
+                        <span class="problem-name">Trapping Rainwater</span>
+                        <span class="difficulty hard">🔴 Hard</span>
+                        <span class="companies">💼 Samsung</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="hard">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">23.</span>
+                        <span class="problem-name">Sliding Window Maximum</span>
+                        <span class="difficulty hard">🔴 Hard</span>
+                        <span class="companies">💼 Amazon Directi Flipkart Microsoft Google</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="hard">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">25.</span>
+                        <span class="problem-name">Largest Rectangle in a Histogram</span>
+                        <span class="difficulty hard">🔴 Hard</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="hard">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">22.</span>
+                        <span class="problem-name">Trapping Rainwater</span>
+                        <span class="difficulty hard">🔴 Hard</span>
+                        <span class="companies">💼 Samsung</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="hard">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">23.</span>
+                        <span class="problem-name">Sliding Window Maximum</span>
+                        <span class="difficulty hard">🔴 Hard</span>
+                        <span class="companies">💼 Amazon Directi Flipkart Microsoft Google</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="hard">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">24.</span>
+                        <span class="problem-name">Reverse Pairs</span>
+                        <span class="difficulty hard">🔴 Hard</span>
+                    </div>
+                </div>
+                <div class="problem-row" data-difficulty="hard">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">25.</span>
+                        <span class="problem-name">Largest Rectangle in a Histogram</span>
+                        <span class="difficulty hard">🔴 Hard</span>
+                    </div>
+                </div>                                
+            </div>
+        </div>
+        <!-- Binary Search Section -->
+        <div class="dsa-section" id="binary-search">
+            <div class="section-title">
+                <span class="section-emoji">🔍</span>
+                <h2 class="title is-4">Binary Search</h2>
+            </div>
+            <div class="problems-container">
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">1.</span>
+                        <span class="problem-name">Search in Rotated Sorted Array</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                        <span class="companies">💼 Microsoft Google Adobe Amazon D-E-Shaw Flipkart</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">2.</span>
+                        <span class="problem-name">Peak Index in Mountain Array</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">3.</span>
+                        <span class="problem-name">Single Element in Sorted Array</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">4.</span>
+                        <span class="problem-name">Allocate Minimum Pages (Book Allocation)</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                        <span class="companies">💼 Google Infosys Codenation Amazon Microsoft</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">5.</span>
+                        <span class="problem-name">Painter’s Partition</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">6.</span>
+                        <span class="problem-name">Aggressive Cows</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                        <span class="companies">💼 Adobe</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="hard">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">7.</span>
+                        <span class="problem-name">Median of 2 Sorted Arrays</span>
+                        <span class="difficulty hard">🔴 Hard</span>
+                        <span class="companies">💼 Amazon Samsung Microsoft Google</span>
+                    </div>
+                </div>                
+            </div>
+        </div>
+        <!-- Strings Section -->
+        <div class="dsa-section" id="binary-search">
+            <div class="section-title">
+                <span class="section-emoji">🧵</span>
+                <h2 class="title is-4">Strings</h2>
+            </div>
+            <div class="problems-container">
+                <div class="problem-row" data-difficulty="easy">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">1.</span>
+                        <span class="problem-name">Valid Palindrome</span>
+                        <span class="difficulty easy">🟢 Easy</span>
+                        <span class="companies">💼 Amazon Cisco D-E-Shaw Facebook FactSet MorganStanley</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="easy">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">2.</span>
+                        <span class="problem-name">Longest Common Prefix</span>
+                        <span class="difficulty easy">🟢 Easy</span>
+                        <span class="companies">💼 Adobe Blinkit Dunzo</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="easy">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">3.</span>
+                        <span class="problem-name">Valid Anagram</span>
+                        <span class="difficulty easy">🟢 Easy</span>
+                        <span class="companies">💼 Google Adobe Flipkart Nagarro Media.net Directi</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">4.</span>
+                        <span class="problem-name">Reverse Words in String</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">5.</span>
+                        <span class="problem-name">Remove All Occurrences of String</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">6.</span>
+                        <span class="problem-name">Permutation in String</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                        <span class="companies">💼 Adobe GoldmanSachs Uber</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">7.</span>
+                        <span class="problem-name">String Compression</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">8.</span>
+                        <span class="problem-name">Group Anagrams</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                        <span class="companies">💼 Samsung Adobe Amazon</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="hard">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">9.</span>
+                        <span class="problem-name">Minimum Window Substring</span>
+                        <span class="difficulty hard">🔴 Hard</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="hard">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">10.</span>
+                        <span class="problem-name">KMP Algorithm</span>
+                        <span class="difficulty hard">🔴 Hard</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="hard">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">11.</span>
+                        <span class="problem-name">Robin Karp</span>
+                        <span class="difficulty hard">🔴 Hard</span>
+                        <span class="companies">💼 Amazon Google MakeMyTrip Streamoid Technologies</span>
+                    </div>
+                </div>                
+            </div>
+        </div>
+        <!-- Recursion & Backtracking Section -->
+        <div class="dsa-section" id="binary-search">
+            <div class="section-title">
+                <span class="section-emoji">♾️</span>
+                <h2 class="title is-4">Recursion & Backtracking</h2>
+            </div>
+            <div class="problems-container">
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">1.</span>
+                        <span class="problem-name">Combination Sum I</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">2.</span>
+                        <span class="problem-name">Combination Sum II</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">3.</span>
+                        <span class="problem-name">Palindrome Partitioning</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">4.</span>
+                        <span class="problem-name">Knights Tour</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">5.</span>
+                        <span class="problem-name">M Coloring</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">6.</span>
+                        <span class="problem-name">Rat in a Maze</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">7.</span>
+                        <span class="problem-name">Subsets II</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">8.</span>
+                        <span class="problem-name">Merge Sort</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="hard">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">9.</span>
+                        <span class="problem-name">N Queens</span>
+                        <span class="difficulty hard">🔴 Hard</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="hard">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">10.</span>
+                        <span class="problem-name">Sudoku Solver</span>
+                        <span class="difficulty hard">🔴 Hard</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="hard">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">11.</span>
+                        <span class="problem-name">Count Inversions</span>
+                        <span class="difficulty hard">🔴 Hard</span>
+                    </div>
+                </div>                
+            </div>
+        </div>
+        <!-- Linked List Section -->
+        <div class="dsa-section" id="binary-search">
+            <div class="section-title">
+                <span class="section-emoji">📃</span>
+                <h2 class="title is-4">Linked List</h2>
+            </div>
+            <div class="problems-container">
+                <div class="problem-row" data-difficulty="easy">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">1.</span>
+                        <span class="problem-name">Reverse a LL</span>
+                        <span class="difficulty easy">🟢 Easy</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="easy">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">2.</span>
+                        <span class="problem-name">Middle of LL</span>
+                        <span class="difficulty easy">🟢 Easy</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="easy">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">3.</span>
+                        <span class="problem-name">Merge 2 Sorted LL</span>
+                        <span class="difficulty easy">🟢 Easy</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="easy">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">4.</span>
+                        <span class="problem-name">Check if LL is Palindrome or Not</span>
+                        <span class="difficulty easy">🟢 Easy</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="easy">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">5.</span>
+                        <span class="problem-name">Detect Cycle in LL</span>
+                        <span class="difficulty easy">🟢 Easy</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">6.</span>
+                        <span class="problem-name">Remove Cycle in LL</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">7.</span>
+                        <span class="problem-name">Flatten LL</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">8.</span>
+                        <span class="problem-name">Clone LL with Random Pointers</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">9.</span>
+                        <span class="problem-name">Add 2 Numbers</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">10.</span>
+                        <span class="problem-name">Reverse Linked List 2</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">11.</span>
+                        <span class="problem-name">LRU Cache</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">12.</span>
+                        <span class="problem-name">Rotate a LL</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="hard">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">13.</span>
+                        <span class="problem-name">Reverse Nodes in K Groups</span>
+                        <span class="difficulty hard">🔴 Hard</span>
+                    </div>
+                </div>                
+            </div>
+        </div>
+        <!-- Stack & Queue Section -->
+        <div class="dsa-section" id="binary-search">
+            <div class="section-title">
+                <span class="section-emoji">📚</span>
+                <h2 class="title is-4">Stack & Queue</h2>
+            </div>
+            <div class="problems-container">
+                <div class="problem-row" data-difficulty="easy">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">1.</span>
+                        <span class="problem-name">Implement Stack using Queue</span>
+                        <span class="difficulty easy">🟢 Easy</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="easy">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">2.</span>
+                        <span class="problem-name">Implement Queue using Stack</span>
+                        <span class="difficulty easy">🟢 Easy</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="easy">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">3.</span>
+                        <span class="problem-name">Next Greater Element I</span>
+                        <span class="difficulty easy">🟢 Easy</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="easy">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">4.</span>
+                        <span class="problem-name">Valid Parenthesis</span>
+                        <span class="difficulty easy">🟢 Easy</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="easy">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">5.</span>
+                        <span class="problem-name">1st Non Repeating in Stream</span>
+                        <span class="difficulty easy">🟢 Easy</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="easy">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">6.</span>
+                        <span class="problem-name">Reverse 1st K Elements of Queue</span>
+                        <span class="difficulty easy">🟢 Easy</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="easy">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">7.</span>
+                        <span class="problem-name">Time needed to Buy Tickets</span>
+                        <span class="difficulty easy">🟢 Easy</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">8.</span>
+                        <span class="problem-name">Next Greater Element II</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">9.</span>
+                        <span class="problem-name">Previous Smaller Element</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">10.</span>
+                        <span class="problem-name">Celebrity Problem</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">11.</span>
+                        <span class="problem-name">Get Min Element from Stack</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">12.</span>
+                        <span class="problem-name">Circular Tour / Gas Station</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">13.</span>
+                        <span class="problem-name">Rotten Oranges</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="medium">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">14.</span>
+                        <span class="problem-name">Stock Span</span>
+                        <span class="difficulty medium">🟠 Medium</span>
+                    </div>
+                </div>
+                
+                <div class="problem-row" data-difficulty="hard">
+                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
+                    <div class="problem-info">
+                        <span class="problem-number">15.</span>
+                        <span class="problem-name">Max Area in Histogram</span>
+                        <span class="difficulty hard">🔴 Hard</span>
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+     <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Load saved state
+        loadSavedState();
+
+        // Set up event listeners for buttons
+        document.getElementById('save-progress').addEventListener('click', saveProgress);
+        document.getElementById('reset-progress').addEventListener('click', resetProgress);
+
+        // Set up event listeners for filter buttons
+        const filterButtons = document.querySelectorAll('.filter-button');
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+                // Apply filter
+                applyFilter(this.getAttribute('data-filter'));
+            });
+        });
+
+        // Calculate initial progress
+        updateProgress();
+    });
+
+    function toggleProblem(checkbox) {
+        // Toggle between checked and unchecked
+        if (checkbox.textContent === '⬜') {
+            checkbox.textContent = '✅';
+            checkbox.classList.add('emoji-done');
+            checkbox.classList.remove('emoji-pending');
+        } else {
+            checkbox.textContent = '⬜';
+            checkbox.classList.add('emoji-pending');
+            checkbox.classList.remove('emoji-done');
+        }
+
+        // Update progress
+        updateProgress();
+
+        // Auto save
+        saveProgress();
+    }
+
+    function updateProgress() {
+        const totalProblems = document.querySelectorAll('.problem-row').length;
+
+        // Correctly count solved problems
+        const solvedProblems = Array.from(document.querySelectorAll('.checkbox-custom')).filter(
+            checkbox => checkbox.textContent === '✅'
+        ).length;
+
+        const progressPercent = totalProblems > 0 ? (solvedProblems / totalProblems) * 100 : 0;
+
+        document.getElementById('total-progress').value = progressPercent;
+        document.getElementById('progress-text').textContent =
+            `${solvedProblems} of ${totalProblems} problems solved (${Math.round(progressPercent)}%)`;
+    }
+
+    function saveProgress() {
+        const checkboxStates = {};
+
+        // Get all sections
+        document.querySelectorAll('.dsa-section').forEach(section => {
+            const sectionId = section.id;
+            checkboxStates[sectionId] = {};
+
+            // Get all problems in this section
+            section.querySelectorAll('.problem-row').forEach((problem, index) => {
+                const checkbox = problem.querySelector('.checkbox-custom');
+                checkboxStates[sectionId][index] = checkbox.textContent === '✅';
+            });
+        });
+
+        localStorage.setItem('dsaTrackerProgress', JSON.stringify(checkboxStates));
+        showNotification('Progress saved! 💾');
+    }
+
+    function loadSavedState() {
+        const savedState = localStorage.getItem('dsaTrackerProgress');
+        if (!savedState) return;
+
+        try {
+            const checkboxStates = JSON.parse(savedState);
+
+            // Restore checkbox states
+            Object.keys(checkboxStates).forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (!section) return;
+
+                const problems = section.querySelectorAll('.problem-row');
+                Object.keys(checkboxStates[sectionId]).forEach(index => {
+                    if (problems[index]) {
+                        const checkbox = problems[index].querySelector('.checkbox-custom');
+                        if (checkboxStates[sectionId][index]) {
+                            checkbox.textContent = '✅';
+                            checkbox.classList.add('emoji-done');
+                            checkbox.classList.remove('emoji-pending');
+                        }
+                    }
+                });
+            });
+        } catch (e) {
+            console.error('Error loading saved state:', e);
+        }
+    }
+
+    function resetProgress() {
+        if (confirm('Are you sure you want to reset all progress? This cannot be undone! 🚨')) {
+            document.querySelectorAll('.checkbox-custom').forEach(checkbox => {
+                checkbox.textContent = '⬜';
+                checkbox.classList.add('emoji-pending');
+                checkbox.classList.remove('emoji-done');
+            });
+
+            updateProgress();
+            localStorage.removeItem('dsaTrackerProgress');
+            showNotification('Progress reset! 🔄');
+        }
+    }
+
+    function applyFilter(filter) {
+        const problemRows = document.querySelectorAll('.problem-row');
+
+        problemRows.forEach(row => {
+            const isSolved = row.querySelector('.checkbox-custom').textContent === '✅';
+            const difficulty = row.getAttribute('data-difficulty');
+
+            switch (filter) {
+                case 'all':
+                    row.style.display = 'flex';
+                    break;
+                case 'solved':
+                    row.style.display = isSolved ? 'flex' : 'none';
+                    break;
+                case 'unsolved':
+                    row.style.display = !isSolved ? 'flex' : 'none';
+                    break;
+                case 'easy':
+                case 'medium':
+                case 'hard':
+                    row.style.display = difficulty === filter ? 'flex' : 'none';
+                    break;
+            }
+        });
+    }
+
+    function showNotification(message) {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.style.position = 'fixed';
+        notification.style.bottom = '20px';
+        notification.style.right = '20px';
+        notification.style.backgroundColor = '#bb86fc';
+        notification.style.color = '#000';
+        notification.style.padding = '10px 20px';
+        notification.style.borderRadius = '5px';
+        notification.style.zIndex = '1000';
+        notification.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+        notification.style.fontFamily = "'Playfair Display', serif";
+        notification.textContent = message;
+
+        // Add to body
+        document.body.appendChild(notification);
+
+        // Remove after 3 seconds
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            notification.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 500);
+        }, 3000);
+    }
+
+    // Helper function to select elements containing specific text
+    HTMLElement.prototype.containsText = function (text) {
+        return this.textContent.trim() === text;
+    };
+</script>
+</body>
+</html>
