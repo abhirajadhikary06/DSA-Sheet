@@ -6,6 +6,7 @@
     <title>DSA Problem Tracker</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💣</text></svg>">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
         body {
@@ -176,7 +177,7 @@
             <button class="filter-button" data-filter="hard">🔴 Hard</button>
         </div>
         <!-- Arrays & Strings Section -->
-        <div class="dsa-section" id="arrays-strings">
+        <div class="dsa-section" id="arrays">
             <div class="section-title">
                 <span class="section-emoji">🚃</span>
                 <h2 class="title is-4">Arrays</h2>
@@ -402,27 +403,7 @@
                         <span class="difficulty hard">🔴 Hard</span>
                         <span class="companies">💼 Amazon Directi Flipkart Microsoft Google</span>
                     </div>
-                </div>
-                
-                <div class="problem-row" data-difficulty="hard">
-                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
-                    <div class="problem-info">
-                        <span class="problem-number">25.</span>
-                        <span class="problem-name">Largest Rectangle in a Histogram</span>
-                        <span class="difficulty hard">🔴 Hard</span>
-                    </div>
-                </div>
-                
-                <div class="problem-row" data-difficulty="hard">
-                    <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
-                    <div class="problem-info">
-                        <span class="problem-number">22.</span>
-                        <span class="problem-name">Trapping Rainwater</span>
-                        <span class="difficulty hard">🔴 Hard</span>
-                        <span class="companies">💼 Samsung</span>
-                    </div>
-                </div>
-                
+                </div>                
                 <div class="problem-row" data-difficulty="hard">
                     <div class="checkbox-custom" onclick="toggleProblem(this)">⬜</div>
                     <div class="problem-info">
@@ -527,7 +508,7 @@
             </div>
         </div>
         <!-- Strings Section -->
-        <div class="dsa-section" id="binary-search">
+        <div class="dsa-section" id="strings">
             <div class="section-title">
                 <span class="section-emoji">🧵</span>
                 <h2 class="title is-4">Strings</h2>
@@ -640,7 +621,7 @@
             </div>
         </div>
         <!-- Recursion & Backtracking Section -->
-        <div class="dsa-section" id="binary-search">
+        <div class="dsa-section" id="recursion-backtracking">
             <div class="section-title">
                 <span class="section-emoji">♾️</span>
                 <h2 class="title is-4">Recursion & Backtracking</h2>
@@ -747,7 +728,7 @@
             </div>
         </div>
         <!-- Linked List Section -->
-        <div class="dsa-section" id="binary-search">
+        <div class="dsa-section" id="linked-list">
             <div class="section-title">
                 <span class="section-emoji">📃</span>
                 <h2 class="title is-4">Linked List</h2>
@@ -872,7 +853,7 @@
             </div>
         </div>
         <!-- Stack & Queue Section -->
-        <div class="dsa-section" id="binary-search">
+        <div class="dsa-section" id="stack-queue">
             <div class="section-title">
                 <span class="section-emoji">📚</span>
                 <h2 class="title is-4">Stack & Queue</h2>
@@ -1015,186 +996,190 @@
             </div>
         </div>
     </div>
-     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Load saved state
-        loadSavedState();
-
-        // Set up event listeners for buttons
-        document.getElementById('save-progress').addEventListener('click', saveProgress);
-        document.getElementById('reset-progress').addEventListener('click', resetProgress);
-
-        // Set up event listeners for filter buttons
-        const filterButtons = document.querySelectorAll('.filter-button');
-        filterButtons.forEach(button => {
-            button.addEventListener('click', function () {
-                // Remove active class from all buttons
-                filterButtons.forEach(btn => btn.classList.remove('active'));
-                // Add active class to clicked button
-                this.classList.add('active');
-                // Apply filter
-                applyFilter(this.getAttribute('data-filter'));
-            });
-        });
-
-        // Calculate initial progress
-        updateProgress();
-    });
-
-    function toggleProblem(checkbox) {
-        // Toggle between checked and unchecked
-        if (checkbox.textContent === '⬜') {
-            checkbox.textContent = '✅';
-            checkbox.classList.add('emoji-done');
-            checkbox.classList.remove('emoji-pending');
-        } else {
-            checkbox.textContent = '⬜';
-            checkbox.classList.add('emoji-pending');
-            checkbox.classList.remove('emoji-done');
-        }
-
-        // Update progress
-        updateProgress();
-
-        // Auto save
-        saveProgress();
-    }
-
-    function updateProgress() {
-        const totalProblems = document.querySelectorAll('.problem-row').length;
-
-        // Correctly count solved problems
-        const solvedProblems = Array.from(document.querySelectorAll('.checkbox-custom')).filter(
-            checkbox => checkbox.textContent === '✅'
-        ).length;
-
-        const progressPercent = totalProblems > 0 ? (solvedProblems / totalProblems) * 100 : 0;
-
-        document.getElementById('total-progress').value = progressPercent;
-        document.getElementById('progress-text').textContent =
-            `${solvedProblems} of ${totalProblems} problems solved (${Math.round(progressPercent)}%)`;
-    }
-
-    function saveProgress() {
-        const checkboxStates = {};
-
-        // Get all sections
-        document.querySelectorAll('.dsa-section').forEach(section => {
-            const sectionId = section.id;
-            checkboxStates[sectionId] = {};
-
-            // Get all problems in this section
-            section.querySelectorAll('.problem-row').forEach((problem, index) => {
-                const checkbox = problem.querySelector('.checkbox-custom');
-                checkboxStates[sectionId][index] = checkbox.textContent === '✅';
-            });
-        });
-
-        localStorage.setItem('dsaTrackerProgress', JSON.stringify(checkboxStates));
-        showNotification('Progress saved! 💾');
-    }
-
-    function loadSavedState() {
-        const savedState = localStorage.getItem('dsaTrackerProgress');
-        if (!savedState) return;
-
-        try {
-            const checkboxStates = JSON.parse(savedState);
-
-            // Restore checkbox states
-            Object.keys(checkboxStates).forEach(sectionId => {
-                const section = document.getElementById(sectionId);
-                if (!section) return;
-
-                const problems = section.querySelectorAll('.problem-row');
-                Object.keys(checkboxStates[sectionId]).forEach(index => {
-                    if (problems[index]) {
-                        const checkbox = problems[index].querySelector('.checkbox-custom');
-                        if (checkboxStates[sectionId][index]) {
-                            checkbox.textContent = '✅';
-                            checkbox.classList.add('emoji-done');
-                            checkbox.classList.remove('emoji-pending');
-                        }
-                    }
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Load saved state
+            loadSavedState();
+    
+            // Set up event listeners for buttons
+            document.getElementById('save-progress').addEventListener('click', saveProgress);
+            document.getElementById('reset-progress').addEventListener('click', resetProgress);
+    
+            // Set up event listeners for filter buttons
+            const filterButtons = document.querySelectorAll('.filter-button');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    applyFilter(this.getAttribute('data-filter'));
                 });
             });
-        } catch (e) {
-            console.error('Error loading saved state:', e);
-        }
-    }
-
-    function resetProgress() {
-        if (confirm('Are you sure you want to reset all progress? This cannot be undone! 🚨')) {
-            document.querySelectorAll('.checkbox-custom').forEach(checkbox => {
+    
+            // Calculate initial progress
+            updateProgress();
+        });
+    
+        function toggleProblem(checkbox) {
+            if (checkbox.textContent === '⬜') {
+                checkbox.textContent = '✅';
+                checkbox.classList.add('emoji-done');
+                checkbox.classList.remove('emoji-pending');
+            } else {
                 checkbox.textContent = '⬜';
                 checkbox.classList.add('emoji-pending');
                 checkbox.classList.remove('emoji-done');
-            });
-
-            updateProgress();
-            localStorage.removeItem('dsaTrackerProgress');
-            showNotification('Progress reset! 🔄');
-        }
-    }
-
-    function applyFilter(filter) {
-        const problemRows = document.querySelectorAll('.problem-row');
-
-        problemRows.forEach(row => {
-            const isSolved = row.querySelector('.checkbox-custom').textContent === '✅';
-            const difficulty = row.getAttribute('data-difficulty');
-
-            switch (filter) {
-                case 'all':
-                    row.style.display = 'flex';
-                    break;
-                case 'solved':
-                    row.style.display = isSolved ? 'flex' : 'none';
-                    break;
-                case 'unsolved':
-                    row.style.display = !isSolved ? 'flex' : 'none';
-                    break;
-                case 'easy':
-                case 'medium':
-                case 'hard':
-                    row.style.display = difficulty === filter ? 'flex' : 'none';
-                    break;
             }
-        });
-    }
-
-    function showNotification(message) {
-        // Create notification element
-        const notification = document.createElement('div');
-        notification.style.position = 'fixed';
-        notification.style.bottom = '20px';
-        notification.style.right = '20px';
-        notification.style.backgroundColor = '#bb86fc';
-        notification.style.color = '#000';
-        notification.style.padding = '10px 20px';
-        notification.style.borderRadius = '5px';
-        notification.style.zIndex = '1000';
-        notification.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
-        notification.style.fontFamily = "'Playfair Display', serif";
-        notification.textContent = message;
-
-        // Add to body
-        document.body.appendChild(notification);
-
-        // Remove after 3 seconds
-        setTimeout(() => {
-            notification.style.opacity = '0';
-            notification.style.transition = 'opacity 0.5s ease';
+            updateProgress();
+            saveProgress();
+        }
+    
+        function updateProgress() {
+            const totalProblems = document.querySelectorAll('.problem-row').length;
+            const solvedProblems = Array.from(document.querySelectorAll('.checkbox-custom')).filter(
+                checkbox => checkbox.textContent === '✅'
+            ).length;
+            const progressPercent = totalProblems > 0 ? (solvedProblems / totalProblems) * 100 : 0;
+    
+            document.getElementById('total-progress').value = progressPercent;
+            document.getElementById('progress-text').textContent =
+                `${solvedProblems} of ${totalProblems} problems solved (${Math.round(progressPercent)}%)`;
+        }
+    
+        function saveProgress() {
+            const checkboxStates = {};
+    
+            document.querySelectorAll('.dsa-section').forEach(section => {
+                const sectionId = section.id;
+                if (!sectionId) {
+                    console.warn('Section missing ID:', section);
+                    return;
+                }
+                checkboxStates[sectionId] = {};
+    
+                section.querySelectorAll('.problem-row').forEach((problem, index) => {
+                    const checkbox = problem.querySelector('.checkbox-custom');
+                    checkboxStates[sectionId][index] = checkbox.textContent === '✅';
+                });
+            });
+    
+            localStorage.setItem('dsaTrackerProgress', JSON.stringify(checkboxStates));
+            showNotification('Progress saved! 💾');
+        }
+    
+        function loadSavedState() {
+            const savedState = localStorage.getItem('dsaTrackerProgress');
+            if (!savedState) {
+                console.log('No saved state found.');
+                return;
+            }
+    
+            try {
+                const checkboxStates = JSON.parse(savedState);
+                console.log('Loaded state:', checkboxStates);
+    
+                Object.keys(checkboxStates).forEach(sectionId => {
+                    const section = document.getElementById(sectionId);
+                    if (!section) {
+                        console.warn(`Section with ID ${sectionId} not found in DOM.`);
+                        return;
+                    }
+    
+                    const problems = section.querySelectorAll('.problem-row');
+                    if (problems.length === 0) {
+                        console.warn(`No problem rows found in section ${sectionId}.`);
+                        return;
+                    }
+    
+                    Object.keys(checkboxStates[sectionId]).forEach(index => {
+                        const problemIndex = parseInt(index, 10);
+                        if (problems[problemIndex]) {
+                            const checkbox = problems[problemIndex].querySelector('.checkbox-custom');
+                            if (checkbox) {
+                                checkbox.textContent = checkboxStates[sectionId][index] ? '✅' : '⬜';
+                                checkbox.classList.toggle('emoji-done', checkboxStates[sectionId][index]);
+                                checkbox.classList.toggle('emoji-pending', !checkboxStates[sectionId][index]);
+                            } else {
+                                console.warn(`Checkbox not found for problem ${problemIndex} in section ${sectionId}.`);
+                            }
+                        } else {
+                            console.warn(`Problem index ${problemIndex} out of range in section ${sectionId}.`);
+                        }
+                    });
+                });
+    
+                updateProgress(); // Update progress after loading state
+            } catch (e) {
+                console.error('Error loading saved state:', e);
+            }
+        }
+    
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset all progress? This cannot be undone! 🚨')) {
+                document.querySelectorAll('.checkbox-custom').forEach(checkbox => {
+                    checkbox.textContent = '⬜';
+                    checkbox.classList.add('emoji-pending');
+                    checkbox.classList.remove('emoji-done');
+                });
+                updateProgress();
+                localStorage.removeItem('dsaTrackerProgress');
+                showNotification('Progress reset! 🔄');
+            }
+        }
+    
+        function applyFilter(filter) {
+            const problemRows = document.querySelectorAll('.problem-row');
+    
+            problemRows.forEach(row => {
+                const isSolved = row.querySelector('.checkbox-custom').textContent === '✅';
+                const difficulty = row.getAttribute('data-difficulty');
+    
+                switch (filter) {
+                    case 'all':
+                        row.style.display = 'flex';
+                        break;
+                    case 'solved':
+                        row.style.display = isSolved ? 'flex' : 'none';
+                        break;
+                    case 'unsolved':
+                        row.style.display = !isSolved ? 'flex' : 'none';
+                        break;
+                    case 'easy':
+                    case 'medium':
+                    case 'hard':
+                        row.style.display = difficulty === filter ? 'flex' : 'none';
+                        break;
+                }
+            });
+        }
+    
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.position = 'fixed';
+            notification.style.bottom = '20px';
+            notification.style.right = '20px';
+            notification.style.backgroundColor = '#bb86fc';
+            notification.style.color = '#000';
+            notification.style.padding = '10px 20px';
+            notification.style.borderRadius = '5px';
+            notification.style.zIndex = '1000';
+            notification.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+            notification.style.fontFamily = "'Playfair Display', serif";
+            notification.textContent = message;
+    
+            document.body.appendChild(notification);
+    
             setTimeout(() => {
-                document.body.removeChild(notification);
-            }, 500);
-        }, 3000);
-    }
-
-    // Helper function to select elements containing specific text
-    HTMLElement.prototype.containsText = function (text) {
-        return this.textContent.trim() === text;
-    };
-</script>
+                notification.style.opacity = '0';
+                notification.style.transition = 'opacity 0.5s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 500);
+            }, 3000);
+        }
+    
+        HTMLElement.prototype.containsText = function (text) {
+            return this.textContent.trim() === text;
+        };
+    </script>
 </body>
 </html>
